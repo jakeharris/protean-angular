@@ -1,0 +1,157 @@
+[
+  {
+    "type": "normal",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fighting"],
+      "resistances": [],
+      "immunities": ["ghost"]
+    }
+  },
+  {
+    "type": "fire",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["water", "ground", "rock"],
+      "resistances": ["fire", "grass", "ice", "bug", "steel", "fairy"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "water",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["electric", "grass"],
+      "resistances": ["fire", "water", "ice", "steel"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "grass",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fire", "ice", "poison", "flying", "bug"],
+      "resistances": ["water", "electric", "grass", "ground"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "electric",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["ground"],
+      "resistances": ["electric", "flying", "steel"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "ground",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["water", "grass", "ice"],
+      "resistances": ["poison", "rock"],
+      "immunities": ["electric"]
+    }
+  },
+  {
+    "type": "rock",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["water", "grass", "fighting", "ground", "steel"],
+      "resistances": ["normal", "fire", "poison", "flying"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "ice",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fire", "fighting", "rock", "steel"],
+      "resistances": ["ice"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "steel",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fire", "fighting", "ground"],
+      "resistances": [
+        "normal",
+        "grass",
+        "ice",
+        "flying",
+        "psychic",
+        "bug",
+        "rock",
+        "dragon",
+        "steel",
+        "fairy"
+      ],
+      "immunities": ["poison"]
+    }
+  },
+  {
+    "type": "fighting",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["flying", "psychic", "fairy"],
+      "resistances": ["bug", "rock", "dark"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "psychic",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["bug", "ghost", "dark"],
+      "resistances": ["fighting", "psychic"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "dark",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fighting", "bug", "fairy"],
+      "resistances": ["ghost", "dark"],
+      "immunities": ["psychic"]
+    }
+  },
+  {
+    "type": "ghost",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["ghost", "dark"],
+      "resistances": ["poison", "bug"],
+      "immunities": ["normal", "fighting"]
+    }
+  },
+  {
+    "type": "fairy",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["poison", "steel"],
+      "resistances": ["fighting", "bug", "dark"],
+      "immunities": ["dragon"]
+    }
+  },
+  {
+    "type": "dragon",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["ice", "dragon", "fairy"],
+      "resistances": ["fire", "water", "electric", "grass"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "flying",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["electric", "ice", "rock"],
+      "resistances": ["grass", "fighting", "bug"],
+      "immunities": ["ground"]
+    }
+  },
+  {
+    "type": "poison",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["ground", "psychic"],
+      "resistances": ["grass", "fighting", "poison", "bug", "fairy"],
+      "immunities": []
+    }
+  },
+  {
+    "type": "bug",
+    "defensiveEffectivenesses": {
+      "weaknesses": ["fire", "flying", "rock"],
+      "resistances": ["grass", "fighting", "ground"],
+      "immunities": []
+    }
+  }
+]
