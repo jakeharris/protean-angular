@@ -1,42 +1,42 @@
 import { Component } from '@angular/core';
+import { BehaviorSubject, merge } from 'rxjs';
+import { scan, debounceTime, map } from 'rxjs/operators';
+import { PokemonType } from './models/pokemon-type';
+import { TypesService } from './services/types.service';
 
 @Component({
   selector: 'app-root',
   template: `
-    <!--The content below is only a placeholder and can be replaced.-->
-    <div style="text-align:center">
-      <h1>Welcome to {{ title }}!</h1>
-    </div>
-    <h2>Here are some links to help you start:</h2>
-    <ul>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://angular.io/tutorial"
-            >Tour of Heroes</a
-          >
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a
-            target="_blank"
-            rel="noopener"
-            href="https://github.com/angular/angular-cli/wiki"
-            >CLI Documentation</a
-          >
-        </h2>
-      </li>
-      <li>
-        <h2>
-          <a target="_blank" rel="noopener" href="https://blog.angular.io/"
-            >Angular blog</a
-          >
-        </h2>
-      </li>
-    </ul>
+    <app-type-input (selectType)="typeSelected$.next($event)"></app-type-input>
+    <app-selected-types
+      [types]="selectedTypes$ | async"
+      (deselectType)="typeDeselected$.next($event)"
+    ></app-selected-types>
+    <app-defensive-effectiveness-remarks
+      [types]="selectedTypes$ | async"
+    ></app-defensive-effectiveness-remarks>
   `,
   styles: [``]
 })
 export class AppComponent {
-  title = 'protean-angular';
+  title = 'protean';
+  secondTypeTimeout = 2000;
+
+  constructor(private typesService: TypesService) {}
+
+  // UI OUTPUT
+  typeSelected$ = new BehaviorSubject<PokemonType>(null);
+  typeDeselected$ = new BehaviorSubject<PokemonType>(null);
+
+  // INTERMEDIARIES
+  typeSelectionTimedOut$ = this.typeSelected$.pipe(
+    debounceTime(this.secondTypeTimeout),
+    map(type => null)
+  );
+
+  // UI INPUT
+  selectedTypes$ = merge(this.typeSelected$, this.typeSelectionTimedOut$).pipe(
+    scan((types, type) => (type ? [...types, type] : []), [] as PokemonType[])
+  );
+  defensiveEffectivenesses$ = this.typesService.getDefensiveEffectivenesses();
 }
