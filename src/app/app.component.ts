@@ -1,6 +1,15 @@
-import { Component } from '@angular/core';
-import { BehaviorSubject, merge } from 'rxjs';
-import { scan, debounceTime, map } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BehaviorSubject, merge, Subject, Subscription } from 'rxjs';
+import {
+  scan,
+  debounceTime,
+  map,
+  startWith,
+  mapTo,
+  pluck,
+  tap,
+  withLatestFrom
+} from 'rxjs/operators';
 import { PokemonType } from './models/pokemon-type';
 import { TypesService } from './services/types.service';
 
@@ -14,13 +23,19 @@ import { TypesService } from './services/types.service';
     ></app-selected-types>
     <app-defensive-effectiveness-remarks
       [types]="selectedTypes$ | async"
+      [defensiveEffectivenesses]="defensiveEffectivenesses$ | async"
     ></app-defensive-effectiveness-remarks>
   `,
   styles: [``]
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'protean';
   secondTypeTimeout = 2000;
+  maximumLength = 2;
+  initialState: ProteanState = {
+    types: [],
+    shouldReset: false
+  };
 
   constructor(private typesService: TypesService) {}
 
@@ -31,12 +46,128 @@ export class AppComponent {
   // INTERMEDIARIES
   typeSelectionTimedOut$ = this.typeSelected$.pipe(
     debounceTime(this.secondTypeTimeout),
-    map(type => null)
+    map(_ => null)
   );
 
-  // UI INPUT
-  selectedTypes$ = merge(this.typeSelected$, this.typeSelectionTimedOut$).pipe(
-    scan((types, type) => (type ? [...types, type] : []), [] as PokemonType[])
+  // ACTIONS
+  dispatcher$ = new Subject<ProteanActionTypeUnion>();
+  actions$ = merge(
+    this.typeSelectionTimedOut$.pipe(
+      mapTo<null, FlagForResetAction>({ type: ProteanActionTypes.FlagForReset })
+    ),
+    this.typeDeselected$.pipe(
+      map(
+        (deselectedType): DeselectAction => ({
+          type: ProteanActionTypes.Deselect,
+          deselectedType
+        })
+      )
+    ),
+    this.dispatcher$.asObservable()
   );
+  // STATE
+  state$ = this.actions$.pipe(
+    startWith(this.initialState),
+    scan((state: ProteanState, action: ProteanActionTypeUnion) => {
+      switch (action.type) {
+        case ProteanActionTypes.Select:
+          return {
+            ...state,
+            types: [...state.types, action.selectedType]
+          };
+        case ProteanActionTypes.Deselect:
+          return {
+            ...state,
+            types: state.types.filter(type => type !== action.deselectedType)
+          };
+        case ProteanActionTypes.FlagForReset:
+          return {
+            ...state,
+            shouldReset: true
+          };
+        case ProteanActionTypes.Reset:
+          if (state.shouldReset) {
+            return this.initialState;
+          } else return state;
+        default:
+          return state;
+      }
+    })
+  );
+  // UI INPUT
   defensiveEffectivenesses$ = this.typesService.getDefensiveEffectivenesses();
+  ready$ = this.defensiveEffectivenesses$.pipe(
+    map(defensiveEffectivenesses =>
+      defensiveEffectivenesses.length > 0 ? true : false
+    )
+  );
+  selectedTypes$ = this.state$.pipe(
+    pluck<ProteanState, PokemonType[]>('types')
+  );
+  flaggedForReset$ = this.state$.pipe(
+    pluck<ProteanState, boolean>('shouldReset')
+  );
+
+  subscriptions: Subscription[];
+
+  typeSelectedAndDeduped$ = this.typeSelected$.pipe(
+    tap(_ => this.dispatcher$.next({ type: ProteanActionTypes.Reset })),
+    withLatestFrom(this.selectedTypes$),
+    tap(([selectedType, selectedTypes]) => {
+      if (selectedTypes.indexOf(selectedType) === -1) {
+        // if adding this one will max it out...
+        if (selectedTypes.length + 1 >= this.maximumLength) {
+          this.dispatcher$.next({ type: ProteanActionTypes.FlagForReset });
+        }
+        this.dispatcher$.next({
+          type: ProteanActionTypes.Select,
+          selectedType
+        });
+      }
+    })
+  );
+  ngOnInit() {
+    this.subscriptions = [];
+    this.subscriptions.push(this.typeSelectedAndDeduped$.subscribe());
+  }
+  ngOnDestroy() {
+    for (const sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
+  }
+}
+
+// Basically, rewrite ngRx
+interface ProteanState {
+  types: PokemonType[];
+  shouldReset: boolean;
+}
+interface Action {
+  type: string;
+}
+interface SelectAction extends Action {
+  readonly type: ProteanActionTypes.Select;
+  selectedType: PokemonType;
+}
+interface DeselectAction extends Action {
+  readonly type: ProteanActionTypes.Deselect;
+  deselectedType: PokemonType;
+}
+interface FlagForResetAction extends Action {
+  readonly type: ProteanActionTypes.FlagForReset;
+}
+interface ResetAction extends Action {
+  readonly type: ProteanActionTypes.Reset;
+}
+
+type ProteanActionTypeUnion =
+  | SelectAction
+  | DeselectAction
+  | FlagForResetAction
+  | ResetAction;
+enum ProteanActionTypes {
+  Select = '[Protean] Select type',
+  Deselect = '[Protean] Deselect type',
+  FlagForReset = '[Protean] Flag for reset',
+  Reset = '[Protean] Reset types'
 }

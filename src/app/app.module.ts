@@ -7,6 +7,9 @@ import {
   SelectedTypesComponent,
   DefensiveEffectivenessRemarksComponent
 } from './components';
+import { TypesService } from './services/types.service';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,8 +18,13 @@ import {
     SelectedTypesComponent,
     DefensiveEffectivenessRemarksComponent
   ],
-  imports: [BrowserModule],
-  providers: [],
+  imports: [BrowserModule, HttpClientModule, ReactiveFormsModule],
+  providers: [
+    {
+      provide: TypesService,
+      useClass: TypesService
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
