@@ -1,7 +1,183 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Nixie+One|Press+Start+2P');
+
 html,
 body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Nixie One', Roboto, sans-serif;
+  font-weight: 400;
+  background-color: beige;
+  color: #a3a32f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input {
+  font-family: 'Press Start 2P', 'Nixie One', Roboto, sans-serif;
+}
+
+.water {
+  background-color: #6390f0;
+  color: #134ac1;
+  border-bottom: 3px solid #1041aa;
+}
+.water::placeholder {
+  color: #134ac1;
+}
+
+.fire {
+  background-color: #ee8130;
+  color: #92450c;
+  border-bottom: 3px solid #7b3a0a;
+}
+.fire::placeholder {
+  color: #92450c;
+}
+
+.ground {
+  background-color: #e2bf65;
+  color: #a88220;
+  border-bottom: 3px solid #92711c;
+}
+.ground::placeholder {
+  color: #a88220;
+}
+
+.rock {
+  background-color: #b6a136;
+  color: #ddd08e;
+  border-bottom: 3px solid #403913;
+}
+.rock::placeholder {
+  color: #ddd08e;
+}
+
+.bug {
+  background-color: #a6b91a;
+  color: #daea69;
+  border-bottom: 3px solid #2e3307;
+}
+.bug::placeholder {
+  color: #daea69;
+}
+
+.fairy {
+  background-color: #d685ad;
+  color: #a4376d;
+  border-bottom: 3px solid #913160;
+}
+.fairy::placeholder {
+  color: #a4376d;
+}
+
+.grass {
+  background-color: #7ac74c;
+  color: #407023;
+  border-bottom: 3px solid #355d1d;
+}
+.grass::placeholder {
+  color: #407023;
+}
+
+.ice {
+  background-color: #96d9d6;
+  color: #40b0ab;
+  border-bottom: 3px solid #399d99;
+}
+.ice::placeholder {
+  color: #40b0ab;
+}
+
+.steel {
+  background-color: #b7b7ce;
+  color: #6b6b9a;
+  border-bottom: 3px solid #60608c;
+}
+.steel::placeholder {
+  color: #6b6b9a;
+}
+
+.ghost {
+  background-color: #735797;
+  color: #b4a3ca;
+  border-bottom: 3px solid #291f36;
+}
+.ghost::placeholder {
+  color: #b4a3ca;
+}
+
+.dark {
+  background-color: #705746;
+  color: #b29684;
+  border-bottom: 3px solid #120e0b;
+}
+.dark::placeholder {
+  color: #b29684;
+}
+
+.poison {
+  background-color: #a33ea1;
+  color: #d48dd2;
+  border-bottom: 3px solid #341434;
+}
+.poison::placeholder {
+  color: #d48dd2;
+}
+
+.fighting {
+  background-color: #c22e28;
+  color: #e68884;
+  border-bottom: 3px solid #43100e;
+}
+.fighting::placeholder {
+  color: #e68884;
+}
+
+.normal {
+  background-color: #f6e9ca;
+  color: #e3bc5d;
+  border-bottom: 3px solid #e0b347;
+}
+.normal::placeholder {
+  color: #e3bc5d;
+}
+
+.psychic {
+  background-color: #f95587;
+  color: #c70742;
+  border-bottom: 3px solid #af063a;
+}
+.psychic::placeholder {
+  color: #c70742;
+}
+
+.flying {
+  background-color: #a98ff3;
+  color: #511ce7;
+  border-bottom: 3px solid #4717d2;
+}
+.flying::placeholder {
+  color: #511ce7;
+}
+
+.electric {
+  background-color: #f7d02c;
+  color: #9e8006;
+  border-bottom: 3px solid #856c05;
+}
+.electric::placeholder {
+  color: #9e8006;
+}
+
+.dragon {
+  background-color: #6f35fc;
+  color: #3503af;
+  border-bottom: 3px solid #2d0296;
+}
+.dragon::placeholder {
+  color: #3503af;
 }
