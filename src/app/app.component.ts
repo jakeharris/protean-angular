@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   typeDeselected$ = new Subject<PokemonType>();
 
   // INTERMEDIARIES
-  typeSelectionTimedOut$ = this.typeSelected$.pipe(
+  typeSelectionTimedOut$ = merge(this.typeSelected$, this.typeDeselected$).pipe(
     debounceTime(this.secondTypeTimeout),
     map(_ => null)
   );
@@ -86,7 +86,8 @@ export class AppComponent implements OnInit, OnDestroy {
         case ProteanActionTypes.Deselect:
           return {
             ...state,
-            types: state.types.filter(type => type !== action.deselectedType)
+            types: state.types.filter(type => type !== action.deselectedType),
+            shouldReset: false
           };
         case ProteanActionTypes.FlagForReset:
           return {
