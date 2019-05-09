@@ -117,6 +117,10 @@ export class AppComponent implements OnInit, OnDestroy {
   typeSelectedAndDeduped$ = this.typeSelected$.pipe(
     tap(_ => this.dispatcher$.next({ type: ProteanActionTypes.Reset })),
     withLatestFrom(this.selectedTypes$),
+    filter(
+      ([selectedType, selectedTypes]) =>
+        selectedTypes.indexOf(selectedType) === -1
+    ),
     tap(([selectedType, selectedTypes]) => {
         // if adding this one will max it out...
         if (selectedTypes.length + 1 >= this.maximumLength) {
