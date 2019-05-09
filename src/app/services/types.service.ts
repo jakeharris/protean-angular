@@ -4,11 +4,9 @@ import { Observable } from 'rxjs';
 import { PokemonTypeDefensiveEffectiveness } from '../models/pokemon-type';
 import { environment } from 'src/environments/environment';
 
-const url = environment.apiUrl + 'models/types.json';
+const url = environment.apiUrl + 'assets/types.json';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TypesService {
   constructor(private http: HttpClient) {}
 
