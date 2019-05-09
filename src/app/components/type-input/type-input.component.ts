@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { PokemonType, isPokemonType } from 'src/app/models/pokemon-type';
@@ -9,7 +9,9 @@ import { tap, filter, map } from 'rxjs/operators';
   template: `
     <input
       type="text"
-      placeholder="Type some Pokemon types here!"
+      autofocus
+      placeholder="Protean"
+      [attr.class]="colorType"
       [formControl]="input"
     />
   `,
@@ -17,11 +19,13 @@ import { tap, filter, map } from 'rxjs/operators';
     `
       input {
         width: 100%;
-        height: 200px;
-        border: none;
+        height: 150px;
+        border-top: none;
+        border-left: none;
+        border-right: none;
         outline: none;
         font-size: 48px;
-        padding: 48px;
+        text-align: center;
       }
     `
   ]
@@ -30,6 +34,7 @@ export class TypeInputComponent implements OnInit {
   input = new FormControl();
   typeElementValue$ = new BehaviorSubject<string>('');
 
+  @Input() colorType: PokemonType;
   @Output() selectType = new EventEmitter<PokemonType>();
 
   ngOnInit() {

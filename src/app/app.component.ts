@@ -8,15 +8,23 @@ import {
   mapTo,
   pluck,
   tap,
-  withLatestFrom
+  withLatestFrom,
+  filter
 } from 'rxjs/operators';
-import { PokemonType } from './models/pokemon-type';
+import {
+  PokemonType,
+  getRandomPokemonType,
+  isPokemonType
+} from './models/pokemon-type';
 import { TypesService } from './services/types.service';
 
 @Component({
   selector: 'app-root',
   template: `
-    <app-type-input (selectType)="typeSelected$.next($event)"></app-type-input>
+    <app-type-input
+      [colorType]="mostRecentlySelectedTypeOrRandomType$ | async"
+      (selectType)="typeSelected$.next($event)"
+    ></app-type-input>
     <app-selected-types
       [types]="selectedTypes$ | async"
       (deselectType)="typeDeselected$.next($event)"
@@ -40,8 +48,8 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private typesService: TypesService) {}
 
   // UI OUTPUT
-  typeSelected$ = new BehaviorSubject<PokemonType>(null);
-  typeDeselected$ = new BehaviorSubject<PokemonType>(null);
+  typeSelected$ = new Subject<PokemonType>();
+  typeDeselected$ = new Subject<PokemonType>();
 
   // INTERMEDIARIES
   typeSelectionTimedOut$ = this.typeSelected$.pipe(
@@ -96,11 +104,6 @@ export class AppComponent implements OnInit, OnDestroy {
   );
   // UI INPUT
   defensiveEffectivenesses$ = this.typesService.getDefensiveEffectivenesses();
-  ready$ = this.defensiveEffectivenesses$.pipe(
-    map(defensiveEffectivenesses =>
-      defensiveEffectivenesses.length > 0 ? true : false
-    )
-  );
   selectedTypes$ = this.state$.pipe(
     pluck<ProteanState, PokemonType[]>('types')
   );
@@ -114,7 +117,6 @@ export class AppComponent implements OnInit, OnDestroy {
     tap(_ => this.dispatcher$.next({ type: ProteanActionTypes.Reset })),
     withLatestFrom(this.selectedTypes$),
     tap(([selectedType, selectedTypes]) => {
-      if (selectedTypes.indexOf(selectedType) === -1) {
         // if adding this one will max it out...
         if (selectedTypes.length + 1 >= this.maximumLength) {
           this.dispatcher$.next({ type: ProteanActionTypes.FlagForReset });
@@ -123,9 +125,13 @@ export class AppComponent implements OnInit, OnDestroy {
           type: ProteanActionTypes.Select,
           selectedType
         });
-      }
     })
   );
+  mostRecentlySelectedTypeOrRandomType$ = this.typeSelected$.pipe(
+    startWith(getRandomPokemonType()),
+    filter(type => isPokemonType(type))
+  );
+
   ngOnInit() {
     this.subscriptions = [];
     this.subscriptions.push(this.typeSelectedAndDeduped$.subscribe());
