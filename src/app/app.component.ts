@@ -38,7 +38,7 @@ import { TypesService } from './services/types.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'protean';
-  secondTypeTimeout = 2000;
+  secondTypeTimeout = 5000;
   maximumLength = 2;
   initialState: ProteanState = {
     types: [],
