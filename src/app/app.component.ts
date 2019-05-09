@@ -122,14 +122,14 @@ export class AppComponent implements OnInit, OnDestroy {
         selectedTypes.indexOf(selectedType) === -1
     ),
     tap(([selectedType, selectedTypes]) => {
-        // if adding this one will max it out...
-        if (selectedTypes.length + 1 >= this.maximumLength) {
-          this.dispatcher$.next({ type: ProteanActionTypes.FlagForReset });
-        }
-        this.dispatcher$.next({
-          type: ProteanActionTypes.Select,
-          selectedType
-        });
+      // if adding this one will max it out...
+      if (selectedTypes.length + 1 >= this.maximumLength) {
+        this.dispatcher$.next({ type: ProteanActionTypes.FlagForReset });
+      }
+      this.dispatcher$.next({
+        type: ProteanActionTypes.Select,
+        selectedType
+      });
     })
   );
   mostRecentlySelectedTypeOrRandomType$ = this.typeSelected$.pipe(
