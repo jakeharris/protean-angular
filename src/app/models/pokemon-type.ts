@@ -47,3 +47,28 @@ export function isPokemonType(typeName: string): typeName is PokemonType {
     typeName === 'bug'
   );
 }
+
+const pokemonTypes: PokemonType[] = [
+  'normal',
+  'fire',
+  'water',
+  'grass',
+  'electric',
+  'ground',
+  'rock',
+  'ice',
+  'steel',
+  'fighting',
+  'psychic',
+  'dark',
+  'ghost',
+  'fairy',
+  'dragon',
+  'flying',
+  'poison',
+  'bug'
+];
+
+export function getRandomPokemonType(): PokemonType {
+  return pokemonTypes[Math.floor(Math.random() * pokemonTypes.length)];
+}
