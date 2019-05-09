@@ -8,64 +8,79 @@ import { TypesService } from 'src/app/services/types.service';
 @Component({
   selector: 'app-defensive-effectiveness-remarks',
   template: `
-    <div class="weaknesses"></div>
+    <pre>{{ weaknesses | json }}</pre>
+    <pre>{{ resistances | json }}</pre>
+    <pre>{{ immunities | json }}</pre>
   `,
   styles: [``]
 })
 export class DefensiveEffectivenessRemarksComponent {
-  doubleWeaknesses: PokemonType[];
-  weaknesses: PokemonType[];
-  resistances: PokemonType[];
-  doubleResistances: PokemonType[];
-  immunities: PokemonType[];
+  doubleWeaknesses: EffectivenessMultiplier[];
+  weaknesses: EffectivenessMultiplier[];
+  resistances: EffectivenessMultiplier[];
+  doubleResistances: EffectivenessMultiplier[];
+  immunities: EffectivenessMultiplier[];
 
-  @Input() types: PokemonType[];
+  _types: PokemonType[];
+  _defensiveEffectivenesses: PokemonTypeDefensiveEffectiveness[];
+
+  @Input() set types(types: PokemonType[]) {
+    this._types = types;
+    this.setDefensiveEffectivenessByMultiplier();
+  }
   @Input() set defensiveEffectivenesses(
-    effectivenesses: PokemonTypeDefensiveEffectiveness[]
+    defensiveEffectivenesses: PokemonTypeDefensiveEffectiveness[]
   ) {
-    const multipliers: EffectivenessMultiplier[] = effectivenesses
-      .filter(effectiveness => effectiveness.type in this.types)
-      .reduce(
-        (unfilteredMultipliers, { weaknesses, immunities, resistances }) => [
-          ...unfilteredMultipliers,
-          ...weaknesses.map(weakness => toEffectivenessMultiplier(weakness, 2)),
-          ...resistances.map(resistance =>
-            toEffectivenessMultiplier(resistance, 0.5)
-          ),
-          ...immunities.map(immunity => toEffectivenessMultiplier(immunity, 0))
-        ],
-        []
-      );
+    this._defensiveEffectivenesses = defensiveEffectivenesses;
+    this.setDefensiveEffectivenessByMultiplier();
+  }
+
+  private setDefensiveEffectivenessByMultiplier() {
+    if (!this._defensiveEffectivenesses || !this._types) return;
+
+    const effectivenesses = this._defensiveEffectivenesses
+      .filter(effectiveness => this._types.indexOf(effectiveness.type) !== -1)
+      .reduce(byFlatteningEffectivenesses, [] as EffectivenessMultiplier[])
+      .reduce(byResolvingMultityping, [] as EffectivenessMultiplier[]);
+
+    this.immunities = effectivenesses.filter(e => e.multiplier === 0);
+    this.doubleResistances = effectivenesses.filter(e => e.multiplier === 0.25);
+    this.resistances = effectivenesses.filter(e => e.multiplier === 0.5);
+    this.weaknesses = effectivenesses.filter(e => e.multiplier === 2);
+    this.doubleWeaknesses = effectivenesses.filter(e => e.multiplier === 4);
   }
 
   constructor(private typesServices: TypesService) {}
 }
 
-function toEffectivenessMultiplier(
-  type: PokemonType,
-  multiplier: number
-): EffectivenessMultiplier {
-  const effectivenessMultiplier = {} as EffectivenessMultiplier;
-  effectivenessMultiplier[type] = multiplier;
-  return effectivenessMultiplier;
+interface EffectivenessMultiplier {
+  type: PokemonType;
+  multiplier: number;
 }
 
-type EffectivenessMultiplier =
-  | { normal: number }
-  | { fire: number }
-  | { water: number }
-  | { grass: number }
-  | { electric: number }
-  | { ground: number }
-  | { rock: number }
-  | { ice: number }
-  | { steel: number }
-  | { fighting: number }
-  | { psychic: number }
-  | { dark: number }
-  | { ghost: number }
-  | { fairy: number }
-  | { dragon: number }
-  | { flying: number }
-  | { poison: number }
-  | { bug: number };
+function byFlatteningEffectivenesses(
+  unfilteredEffectivenesses: EffectivenessMultiplier[],
+  { weaknesses, immunities, resistances }: PokemonTypeDefensiveEffectiveness
+) {
+  return [
+    ...unfilteredEffectivenesses,
+    ...weaknesses.map(weakness => ({ type: weakness, multiplier: 2 })),
+    ...resistances.map(resistance => ({
+      type: resistance,
+      multiplier: 0.5
+    })),
+    ...immunities.map(immunity => ({ type: immunity, multiplier: 0 }))
+  ];
+}
+
+function byResolvingMultityping(filteredEffectivenesses, effectiveness) {
+  const duplicateEffectiveness = filteredEffectivenesses.find(
+    e => e.type === effectiveness.type
+  );
+  if (duplicateEffectiveness) {
+    duplicateEffectiveness.multiplier *= effectiveness.multiplier;
+    return filteredEffectivenesses;
+  } else {
+    return [...filteredEffectivenesses, effectiveness];
+  }
+}
