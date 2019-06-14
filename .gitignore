@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/public
 
 # dependencies
 /node_modules
@@ -25,6 +26,7 @@
 !.vscode/extensions.json
 
 # misc
+/.firebase
 /.sass-cache
 /connect.lock
 /coverage
