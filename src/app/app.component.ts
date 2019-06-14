@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { BehaviorSubject, merge, Subject, Subscription } from 'rxjs';
+import { merge, Subject, Subscription } from 'rxjs';
 import {
   scan,
   debounceTime,
@@ -73,6 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ),
     this.dispatcher$.asObservable()
   );
+
   // STATE
   state$ = this.actions$.pipe(
     startWith(this.initialState),
