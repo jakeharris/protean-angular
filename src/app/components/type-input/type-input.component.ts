@@ -10,7 +10,9 @@ import { tap, filter, map } from 'rxjs/operators';
     <input
       type="text"
       autofocus
+      autocomplete="off"
       placeholder="Protean"
+      pattern="[A-Za-z]+"
       [attr.class]="colorType"
       [formControl]="input"
     />
