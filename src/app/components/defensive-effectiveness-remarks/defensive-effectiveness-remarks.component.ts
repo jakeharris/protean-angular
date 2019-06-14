@@ -89,10 +89,11 @@ import { TypesService } from 'src/app/services/types.service';
         justify-content: space-between;
         padding: 0 48px;
         flex-wrap: wrap;
+        flex-grow: 1;
       }
       section {
-        flex-basis: 33%;
-        width: 33%;
+        max-width: 50%;
+        min-width: 210px;
         padding: 0 16px;
       }
       ul {
@@ -110,8 +111,9 @@ import { TypesService } from 'src/app/services/types.service';
         padding-inline-start: 0;
       }
       .type-card {
-        flex-basis: 50%;
-        width: 50%;
+        box-sizing: border-box;
+        min-width: 210px;
+        max-width: 210px;
         padding: 1rem;
         text-align: center;
         font-size: 1.5rem;

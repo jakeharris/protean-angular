@@ -175,9 +175,9 @@ input {
 
 .dragon {
   background-color: #6f35fc;
-  color: #3503af;
+  color: #2d0296;
   border-bottom: 3px solid #2d0296;
 }
 .dragon::placeholder {
-  color: #3503af;
+  color: #2d0296;
 }
